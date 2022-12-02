@@ -21,47 +21,61 @@ const Dashboard = () => {
   const [amountToEnable, setAmountToEnable] = useState(true);
   const [amountFromEnable, setAmountFromEnable] = useState(true);
 
+  const headers = {
+    "Content-Type": "application/json",
+  };
+
   const handleChangeIsoFrom = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIsoFrom(event.target.value as string);
-    switch (event.target.value as string) {
-      case "USD":
-        setInputAdorFrom("$");
-        setAmountFromEnable(false);
-        break;
-      case "EUR":
-        setInputAdorFrom("€");
-        setAmountFromEnable(false);
-        break;
-      case "RUB":
-        setInputAdorFrom("₽");
-        setAmountFromEnable(false);
-        break;
-      case "BYN":
-        setInputAdorFrom("Br");
-        setAmountFromEnable(false);
-        break;
+    if (event.target.value === isoTo) {
+      setIsoFrom("");
+    } else {
+      setIsoFrom(event.target.value as string);
+
+      switch (event.target.value as string) {
+        case "USD":
+          setInputAdorFrom("$");
+          setAmountFromEnable(false);
+          break;
+        case "EUR":
+          setInputAdorFrom("€");
+          setAmountFromEnable(false);
+          break;
+        case "RUB":
+          setInputAdorFrom("₽");
+          setAmountFromEnable(false);
+          break;
+        case "BYN":
+          setInputAdorFrom("Br");
+          setAmountFromEnable(false);
+          break;
+      }
     }
   };
 
   const handleChangeIsoTo = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIsoTo(event.target.value as string);
-    switch (event.target.value as string) {
-      case "USD":
-        setInputAdorTo("$");
-        setAmountToEnable(false);
-        break;
-      case "EUR":
-        setInputAdorTo("€");
-        setAmountToEnable(false);
-        break;
-      case "RUB":
-        setInputAdorTo("₽");
-        setAmountToEnable(false);
-        break;
-      case "BYN":
-        setInputAdorTo("Br");
-        setAmountToEnable(false);
-        break;
+    if (event.target.value === isoFrom) {
+      setIsoTo("");
+    } else {
+      setIsoTo(event.target.value as string);
+
+      switch (event.target.value as string) {
+        case "USD":
+          setInputAdorTo("$");
+          setAmountToEnable(false);
+          break;
+        case "EUR":
+          setInputAdorTo("€");
+          setAmountToEnable(false);
+          break;
+        case "RUB":
+          setInputAdorTo("₽");
+          setAmountToEnable(false);
+          break;
+        case "BYN":
+          setInputAdorTo("Br");
+          setAmountToEnable(false);
+          break;
+      }
     }
   };
 
@@ -72,15 +86,34 @@ const Dashboard = () => {
     setIsoFrom(bufIso);
     setInputAdorTo(inputAdorFrom);
     setInputAdorFrom(bufAdor);
-    setToAmount(fromAmount);
     setFromAmount("");
+    setToAmount("");
   };
 
-  const handleFromAmountChange = (
+  const handleFromAmountChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const value = event.target.value;
     setFromAmount(value.replace(/\D/g, ""));
+    const response = await fetch("/api/currency/converting", {
+      method: "POST",
+      body: JSON.stringify({
+        sell_iso: isoFrom,
+        buy_iso: isoTo,
+        amount: event.target.value,
+      }),
+      headers: headers,
+    }).then((response) => {
+      if (response.ok) {
+        return response.json();
+      }
+      return response.text().then((error) => {
+        const e = new Error("Something wrong...");
+        e.message = error;
+        throw e;
+      });
+    });
+    setToAmount(response.amount);
   };
 
   const handleToAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -170,7 +203,7 @@ const Dashboard = () => {
                   <TextField
                     id="outlined-select-currency"
                     select
-                    label="Currnecy"
+                    label="Currency"
                     value={isoFrom}
                     onChange={handleChangeIsoFrom}
                     helperText="Select your currency"
