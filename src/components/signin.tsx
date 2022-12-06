@@ -63,7 +63,7 @@ const SignIn = () => {
       });
     });
     if (responseJWT !== "Incorrect username or password") {
-      localStorage.setItem("jwt", responseJWT.jwt);
+      localStorage.setItem("auth-token", responseJWT.jwt);
       navigate("/dashboard");
     }
   };

@@ -7,9 +7,11 @@ import {
   InputAdornment,
   IconButton,
 } from "@mui/material";
-import { useState } from "react";
-import * as React from "react";
+import { useState, useEffect } from "react";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
+import Navbar from "./navbar";
+import { useNavigate } from "react-router";
+import jwt from "jsonwebtoken";
 
 const Dashboard = () => {
   const [isoFrom, setIsoFrom] = useState("");
@@ -24,6 +26,42 @@ const Dashboard = () => {
   const headers = {
     "Content-Type": "application/json",
   };
+
+  interface UserPayload {
+    id: string;
+    email: string;
+    password: string;
+  }
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    (async () => {
+      if (!localStorage.getItem("auth-token")) {
+        navigate("/signin");
+      } else {
+        const response = await fetch("/api/users/valid", {
+          method: "POST",
+          body: JSON.stringify({
+            jwt: localStorage.getItem("auth-token"),
+          }),
+          headers: headers,
+        }).then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+          return response.text().then((error) => {
+            const e = new Error("Something wrong...");
+            e.message = error;
+            throw e;
+          });
+        });
+        if (response !== "ok") {
+          navigate("/signin");
+        }
+      }
+    })();
+  });
 
   const handleChangeIsoFrom = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.value === isoTo) {
@@ -141,175 +179,178 @@ const Dashboard = () => {
   ];
 
   return (
-    <Box
-      className="App"
-      width={"100hv"}
-      height={"100vh"}
-      display={"flex"}
-      alignItems={"center"}
-      sx={{
-        backgroundColor: "grey",
-        background:
-          "url(https://c0.wallpaperflare.com/preview/1017/538/491/money-finance-bank-cash.jpg)",
-        backgroundSize: "cover",
-        backgroundPositionX: "center",
-        backgroundPositionY: "center",
-        overflow: "hidden",
-      }}
-    >
+    <>
+      <Navbar />
       <Box
-        className="formContainer"
+        className="App"
+        width={"100hv"}
+        height={"100vh"}
+        display={"flex"}
+        alignItems={"center"}
         sx={{
-          backgroundColor: "whitesmoke",
-          height: "70%",
-          width: "60%",
-          margin: "0 auto",
-          padding: "0.5rem 1rem 0 1rem",
+          backgroundColor: "grey",
+          background:
+            "url(https://c0.wallpaperflare.com/preview/1017/538/491/money-finance-bank-cash.jpg)",
+          backgroundSize: "cover",
+          backgroundPositionX: "center",
+          backgroundPositionY: "center",
+          overflow: "hidden",
         }}
       >
-        <h1>Currency Converter</h1>
         <Box
-          className="wrapper"
+          className="formContainer"
           sx={{
-            display: "flex",
-            width: "100%",
-            height: "100%",
+            backgroundColor: "whitesmoke",
+            height: "70%",
+            width: "60%",
+            margin: "0 auto",
+            padding: "0.5rem 1rem 0 1rem",
           }}
         >
+          <h1>Currency Converter</h1>
           <Box
-            className="leftContainer"
+            className="wrapper"
             sx={{
-              width: "60%",
-              height: "90%",
+              display: "flex",
+              width: "100%",
+              height: "100%",
             }}
           >
             <Box
-              className="converter"
+              className="leftContainer"
               sx={{
-                height: "auto",
-                display: "flex",
+                width: "60%",
+                height: "90%",
               }}
             >
               <Box
-                className="isoFrom"
+                className="converter"
                 sx={{
-                  paddingTop: "1rem",
-                  paddingLeft: "1.5%",
-                  paddingRight: "1.5%",
-                  width: "44.5%",
+                  height: "auto",
+                  display: "flex",
                 }}
               >
-                <FormControl fullWidth>
-                  <TextField
-                    id="outlined-select-currency"
-                    select
-                    label="Currency"
-                    value={isoFrom}
-                    onChange={handleChangeIsoFrom}
-                    helperText="Select your currency"
-                    sx={{
-                      margin: "0 auto",
-                      width: "9rem",
-                    }}
-                  >
-                    {currencies.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                  <Input
-                    id="standard-adornment-amount"
-                    value={fromAmount}
-                    disabled={amountFromEnable}
-                    onChange={handleFromAmountChange}
-                    startAdornment={
-                      <InputAdornment position="start">
-                        {inputAdorFrom}
-                      </InputAdornment>
-                    }
-                  />
-                </FormControl>
-              </Box>
-              <Box
-                className="swap"
-                sx={{
-                  margin: "auto auto",
-                }}
-              >
-                <IconButton
-                  onClick={swap}
-                  aria-label="delete"
+                <Box
+                  className="isoFrom"
                   sx={{
-                    margin: "0 auto",
+                    paddingTop: "1rem",
+                    paddingLeft: "1.5%",
+                    paddingRight: "1.5%",
+                    width: "44.5%",
                   }}
                 >
-                  <SwapHorizIcon />
-                </IconButton>
-              </Box>
-              <Box
-                className="isoTo"
-                sx={{
-                  paddingTop: "1rem",
-                  paddingLeft: "1.5%",
-                  paddingRight: "1.5%",
-                  paddingBottom: "1rem",
-                  width: "44.5%",
-                }}
-              >
-                <FormControl fullWidth>
-                  <TextField
-                    id="outlined-select-currency"
-                    select
-                    label="Currency"
-                    value={isoTo}
-                    onChange={handleChangeIsoTo}
-                    helperText="Select your currency"
+                  <FormControl fullWidth>
+                    <TextField
+                      id="outlined-select-currency"
+                      select
+                      label="Currency"
+                      value={isoFrom}
+                      onChange={handleChangeIsoFrom}
+                      helperText="Select your currency"
+                      sx={{
+                        margin: "0 auto",
+                        width: "9rem",
+                      }}
+                    >
+                      {currencies.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                    <Input
+                      id="standard-adornment-amount"
+                      value={fromAmount}
+                      disabled={amountFromEnable}
+                      onChange={handleFromAmountChange}
+                      startAdornment={
+                        <InputAdornment position="start">
+                          {inputAdorFrom}
+                        </InputAdornment>
+                      }
+                    />
+                  </FormControl>
+                </Box>
+                <Box
+                  className="swap"
+                  sx={{
+                    margin: "auto auto",
+                  }}
+                >
+                  <IconButton
+                    onClick={swap}
+                    aria-label="delete"
                     sx={{
                       margin: "0 auto",
-                      width: "9rem",
                     }}
                   >
-                    {currencies.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                  <Input
-                    id="standard-adornment-amount"
-                    value={toAmount}
-                    onChange={handleToAmountChange}
-                    disabled={amountToEnable}
-                    startAdornment={
-                      <InputAdornment position="start">
-                        {inputAdorTo}
-                      </InputAdornment>
-                    }
-                  />
-                </FormControl>
+                    <SwapHorizIcon />
+                  </IconButton>
+                </Box>
+                <Box
+                  className="isoTo"
+                  sx={{
+                    paddingTop: "1rem",
+                    paddingLeft: "1.5%",
+                    paddingRight: "1.5%",
+                    paddingBottom: "1rem",
+                    width: "44.5%",
+                  }}
+                >
+                  <FormControl fullWidth>
+                    <TextField
+                      id="outlined-select-currency"
+                      select
+                      label="Currency"
+                      value={isoTo}
+                      onChange={handleChangeIsoTo}
+                      helperText="Select your currency"
+                      sx={{
+                        margin: "0 auto",
+                        width: "9rem",
+                      }}
+                    >
+                      {currencies.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                    <Input
+                      id="standard-adornment-amount"
+                      value={toAmount}
+                      onChange={handleToAmountChange}
+                      disabled={amountToEnable}
+                      startAdornment={
+                        <InputAdornment position="start">
+                          {inputAdorTo}
+                        </InputAdornment>
+                      }
+                    />
+                  </FormControl>
+                </Box>
               </Box>
+              <Box
+                className="statisticContainer"
+                sx={{
+                  width: "100%",
+                  height: "55%",
+                  backgroundColor: "darkgrey",
+                }}
+              ></Box>
             </Box>
             <Box
-              className="statisticContainer"
+              className="rightContainer"
               sx={{
-                width: "100%",
-                height: "55%",
-                backgroundColor: "darkgrey",
+                backgroundColor: "lightblue",
+                width: "50%",
+                height: "80%",
               }}
             ></Box>
           </Box>
-          <Box
-            className="rightContainer"
-            sx={{
-              backgroundColor: "lightblue",
-              width: "50%",
-              height: "80%",
-            }}
-          ></Box>
         </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 export default Dashboard;
