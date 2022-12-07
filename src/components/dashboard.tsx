@@ -11,7 +11,6 @@ import { useState, useEffect } from "react";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import Navbar from "./navbar";
 import { useNavigate } from "react-router";
-import jwt from "jsonwebtoken";
 
 const Dashboard = () => {
   const [isoFrom, setIsoFrom] = useState("");
@@ -26,12 +25,6 @@ const Dashboard = () => {
   const headers = {
     "Content-Type": "application/json",
   };
-
-  interface UserPayload {
-    id: string;
-    email: string;
-    password: string;
-  }
 
   const navigate = useNavigate();
 

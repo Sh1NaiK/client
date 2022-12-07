@@ -64,6 +64,7 @@ const SignIn = () => {
     });
     if (responseJWT !== "Incorrect username or password") {
       localStorage.setItem("auth-token", responseJWT.jwt);
+      localStorage.setItem("username", responseJWT.username);
       navigate("/dashboard");
     }
   };

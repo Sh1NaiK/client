@@ -26,10 +26,6 @@ export default function AccountMenu() {
     setAnchorEl(null);
   };
 
-  const handleRedirect = () => {
-    navigate("/redirect");
-  };
-
   const handleLogOut = () => {
     try {
       localStorage.removeItem("auth-token");
@@ -38,6 +34,7 @@ export default function AccountMenu() {
       console.log("Exception: " + e);
     }
   };
+  const menuSymbol = localStorage.getItem("username");
 
   return (
     <React.Fragment>
@@ -51,7 +48,9 @@ export default function AccountMenu() {
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+            <Avatar sx={{ width: 32, height: 32 }}>
+              {menuSymbol?.slice(0, 1)}
+            </Avatar>
           </IconButton>
         </Tooltip>
       </Box>
@@ -90,16 +89,10 @@ export default function AccountMenu() {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem onClick={handleRedirect}>
+        <MenuItem>
           <Avatar /> My account
         </MenuItem>
         <Divider />
-        {/* <MenuItem>
-          <ListItemIcon>
-            <Settings fontSize="small" />
-          </ListItemIcon>
-          Settings
-        </MenuItem> */}
         <MenuItem onClick={handleLogOut}>
           <ListItemIcon>
             <Logout fontSize="small" />
