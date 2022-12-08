@@ -2,12 +2,11 @@ import {
   Box,
   Button,
   FormControl,
-  Input,
   MenuItem,
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import Navbar from "./navbar";
 import { Space, Table } from "antd";
@@ -21,31 +20,15 @@ const Transactions = () => {
 
   const [dbData, setDbData] = useState([]);
 
+  const mountEffectPassed = useRef(false);
+
   useEffect(() => {
-    (async () => {
-      if (!localStorage.getItem("auth-token")) {
-        navigate("/signin");
-      } else {
-        const response = await fetch("/api/users/valid", {
-          method: "POST",
-          body: JSON.stringify({
-            jwt: localStorage.getItem("auth-token"),
-          }),
-          headers: headers,
-        }).then((response) => {
-          if (response.ok) {
-            return response.json();
-          }
-          return response.text().then((error) => {
-            const e = new Error("Something wrong...");
-            e.message = error;
-            throw e;
-          });
-        });
-        if (response !== "ok") {
+    if (!mountEffectPassed.current) {
+      (async () => {
+        if (!localStorage.getItem("auth-token")) {
           navigate("/signin");
         } else {
-          const response = await fetch("/api/transactions/data", {
+          const response = await fetch("/api/users/valid", {
             method: "POST",
             body: JSON.stringify({
               jwt: localStorage.getItem("auth-token"),
@@ -61,21 +44,44 @@ const Transactions = () => {
               throw e;
             });
           });
-          setDbData(response.rows);
+          if (response !== "ok") {
+            navigate("/signin");
+          } else {
+            const response = await fetch("/api/transactions/data", {
+              method: "POST",
+              body: JSON.stringify({
+                jwt: localStorage.getItem("auth-token"),
+              }),
+              headers: headers,
+            }).then((response) => {
+              if (response.ok) {
+                return response.json();
+              }
+              return response.text().then((error) => {
+                const e = new Error("Something wrong...");
+                e.message = error;
+                throw e;
+              });
+            });
+            setDbData(response.rows);
+          }
         }
-      }
-    })();
-  });
+      })();
+    }
+    return () => {
+      mountEffectPassed.current = true;
+    };
+  }, []);
 
-  const addTransactionHandler = () => {
-    fetch("/api/transactions/add", {
+  const addTransactionHandler = async () => {
+    const result = await fetch("/api/transactions/add", {
       method: "POST",
       body: JSON.stringify({
         jwt: localStorage.getItem("auth-token"),
-        iso_want: "USD",
-        iso_sell: "BYN",
-        rate: 2.5,
-        amount: 100,
+        iso_want: isoWant,
+        iso_sell: isoSell,
+        rate: rate,
+        amount: amount,
       }),
       headers: headers,
     }).then((response) => {
@@ -147,18 +153,37 @@ const Transactions = () => {
   const [rate, setRate] = useState("");
   const [amount, setAmount] = useState("");
 
-  // const regex = /^\D*\.?\D*$/;
-  // const regex = /((\d+)((\.\d{1,2}?))$/;
+  const regex = /^\d*\.?\d*$/;
+  const regex2 = /\D*\.?\D*$/;
 
   const handleChangeRate = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
-    // setRate(value.replace(/[^\d.]/g, ""));
-    setRate(value.replace(regex, ""));
+    if (regex.test(value)) {
+      setRate(value);
+    } else {
+      setRate(value.replace(regex2, ""));
+    }
   };
 
   const handleChangeAmount = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setAmount(value.replace(/\D/g, ""));
+  };
+
+  const handleChangeSellIso = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.value === isoWant) {
+      setIsoSell("");
+    } else {
+      setIsoSell(event.target.value as string);
+    }
+  };
+
+  const handleChangeWantIso = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.value === isoSell) {
+      setIsoWant("");
+    } else {
+      setIsoWant(event.target.value as string);
+    }
   };
 
   return (
@@ -239,6 +264,7 @@ const Transactions = () => {
                 id="outlined-select-currency"
                 select
                 label="Wanted ISO"
+                onChange={handleChangeWantIso}
                 value={isoWant}
                 helperText="Select wanted currency"
                 sx={{
@@ -256,6 +282,7 @@ const Transactions = () => {
                 id="outlined-select-currency"
                 select
                 label="Sell ISO"
+                onChange={handleChangeSellIso}
                 value={isoSell}
                 helperText="Select sell currency"
                 sx={{

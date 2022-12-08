@@ -7,7 +7,7 @@ import {
   InputAdornment,
   IconButton,
 } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import Navbar from "./navbar";
 import { useNavigate } from "react-router";
@@ -28,33 +28,40 @@ const Dashboard = () => {
 
   const navigate = useNavigate();
 
+  const mountEffectPassed = useRef(false);
+
   useEffect(() => {
-    (async () => {
-      if (!localStorage.getItem("auth-token")) {
-        navigate("/signin");
-      } else {
-        const response = await fetch("/api/users/valid", {
-          method: "POST",
-          body: JSON.stringify({
-            jwt: localStorage.getItem("auth-token"),
-          }),
-          headers: headers,
-        }).then((response) => {
-          if (response.ok) {
-            return response.json();
-          }
-          return response.text().then((error) => {
-            const e = new Error("Something wrong...");
-            e.message = error;
-            throw e;
-          });
-        });
-        if (response !== "ok") {
+    if (!mountEffectPassed.current) {
+      (async () => {
+        if (!localStorage.getItem("auth-token")) {
           navigate("/signin");
+        } else {
+          const response = await fetch("/api/users/valid", {
+            method: "POST",
+            body: JSON.stringify({
+              jwt: localStorage.getItem("auth-token"),
+            }),
+            headers: headers,
+          }).then((response) => {
+            if (response.ok) {
+              return response.json();
+            }
+            return response.text().then((error) => {
+              const e = new Error("Something wrong...");
+              e.message = error;
+              throw e;
+            });
+          });
+          if (response !== "ok") {
+            navigate("/signin");
+          }
         }
-      }
-    })();
-  });
+      })();
+    }
+    return () => {
+      mountEffectPassed.current = true;
+    };
+  }, []);
 
   const handleChangeIsoFrom = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.value === isoTo) {
