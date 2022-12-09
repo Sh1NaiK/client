@@ -2,14 +2,7 @@ import SignUp from "./components/signup";
 import SignIn from "./components/signin";
 import Dashboard from "./components/dashboard";
 import Transactions from "./components/transactions";
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Navigate,
-  useNavigate,
-} from "react-router-dom";
-import { useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 function App() {
   return (

@@ -11,6 +11,7 @@ import { useState, useEffect, useRef } from "react";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import Navbar from "./navbar";
 import { useNavigate } from "react-router";
+import Graphic from "./linechart";
 
 const Dashboard = () => {
   const [isoFrom, setIsoFrom] = useState("");
@@ -61,7 +62,7 @@ const Dashboard = () => {
     return () => {
       mountEffectPassed.current = true;
     };
-  }, []);
+  });
 
   const handleChangeIsoFrom = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.value === isoTo) {
@@ -201,7 +202,7 @@ const Dashboard = () => {
           className="formContainer"
           sx={{
             backgroundColor: "whitesmoke",
-            height: "70%",
+            height: "60%",
             width: "60%",
             margin: "0 auto",
             padding: "0.5rem 1rem 0 1rem",
@@ -213,19 +214,21 @@ const Dashboard = () => {
             sx={{
               display: "flex",
               width: "100%",
-              height: "100%",
+              height: "90%",
             }}
           >
             <Box
               className="leftContainer"
               sx={{
                 width: "60%",
-                height: "90%",
+                height: "100%",
               }}
             >
               <Box
                 className="converter"
                 sx={{
+                  backgroundColor: "white",
+                  borderRadius: "1rem",
                   height: "auto",
                   display: "flex",
                 }}
@@ -331,20 +334,37 @@ const Dashboard = () => {
                 </Box>
               </Box>
               <Box
-                className="statisticContainer"
+                className="buttons"
                 sx={{
+                  marginTop: "0.9rem",
+                  borderRadius: "1rem",
+                  backgroundColor: "white",
                   width: "100%",
-                  height: "55%",
-                  backgroundColor: "darkgrey",
+                  height: "15%",
                 }}
               ></Box>
+              <Box
+                className="statisticContainer"
+                sx={{
+                  borderRadius: "1rem",
+                  marginTop: "0.1rem",
+                  marginRight: "2rem",
+                  width: "100%",
+                  height: "55%",
+                  backgroundColor: "white",
+                }}
+              >
+                <Graphic />
+              </Box>
             </Box>
             <Box
               className="rightContainer"
               sx={{
-                backgroundColor: "lightblue",
+                marginLeft: "0.5rem",
+                borderRadius: "1rem",
+                backgroundColor: "white ",
                 width: "50%",
-                height: "80%",
+                height: "100%",
               }}
             ></Box>
           </Box>

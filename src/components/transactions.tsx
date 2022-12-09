@@ -18,6 +18,26 @@ const Transactions = () => {
     "Content-Type": "application/json",
   };
 
+  const updateData = async () => {
+    const response = await fetch("/api/transactions/data", {
+      method: "POST",
+      body: JSON.stringify({
+        jwt: localStorage.getItem("auth-token"),
+      }),
+      headers: headers,
+    }).then((response) => {
+      if (response.ok) {
+        return response.json();
+      }
+      return response.text().then((error) => {
+        const e = new Error("Something wrong...");
+        e.message = error;
+        throw e;
+      });
+    });
+    setDbData(response.rows);
+  };
+
   const [dbData, setDbData] = useState([]);
 
   const mountEffectPassed = useRef(false);
@@ -47,23 +67,7 @@ const Transactions = () => {
           if (response !== "ok") {
             navigate("/signin");
           } else {
-            const response = await fetch("/api/transactions/data", {
-              method: "POST",
-              body: JSON.stringify({
-                jwt: localStorage.getItem("auth-token"),
-              }),
-              headers: headers,
-            }).then((response) => {
-              if (response.ok) {
-                return response.json();
-              }
-              return response.text().then((error) => {
-                const e = new Error("Something wrong...");
-                e.message = error;
-                throw e;
-              });
-            });
-            setDbData(response.rows);
+            updateData();
           }
         }
       })();
@@ -71,10 +75,10 @@ const Transactions = () => {
     return () => {
       mountEffectPassed.current = true;
     };
-  }, []);
+  });
 
   const addTransactionHandler = async () => {
-    const result = await fetch("/api/transactions/add", {
+    await fetch("/api/transactions/add", {
       method: "POST",
       body: JSON.stringify({
         jwt: localStorage.getItem("auth-token"),
@@ -94,6 +98,7 @@ const Transactions = () => {
         throw e;
       });
     });
+    updateData();
   };
 
   const { Column } = Table;
@@ -127,6 +132,7 @@ const Transactions = () => {
         throw e;
       });
     });
+    updateData();
   };
 
   const currencies = [
