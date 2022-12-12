@@ -12,6 +12,7 @@ import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import Navbar from "./navbar";
 import { useNavigate } from "react-router";
 import Graphic from "./linechart";
+import ListingTable from "./listing";
 
 const Dashboard = () => {
   const [isoFrom, setIsoFrom] = useState("");
@@ -220,7 +221,7 @@ const Dashboard = () => {
             <Box
               className="leftContainer"
               sx={{
-                width: "60%",
+                width: "50%",
                 height: "100%",
               }}
             >
@@ -334,23 +335,13 @@ const Dashboard = () => {
                 </Box>
               </Box>
               <Box
-                className="buttons"
-                sx={{
-                  marginTop: "0.9rem",
-                  borderRadius: "1rem",
-                  backgroundColor: "white",
-                  width: "100%",
-                  height: "15%",
-                }}
-              ></Box>
-              <Box
                 className="statisticContainer"
                 sx={{
                   borderRadius: "1rem",
-                  marginTop: "0.1rem",
+                  marginTop: "0.9rem",
                   marginRight: "2rem",
                   width: "100%",
-                  height: "55%",
+                  height: "70%",
                   backgroundColor: "white",
                 }}
               >
@@ -361,12 +352,14 @@ const Dashboard = () => {
               className="rightContainer"
               sx={{
                 marginLeft: "0.5rem",
-                borderRadius: "1rem",
+                borderRadius: "0.5rem",
                 backgroundColor: "white ",
                 width: "50%",
                 height: "100%",
               }}
-            ></Box>
+            >
+              <ListingTable />
+            </Box>
           </Box>
         </Box>
       </Box>

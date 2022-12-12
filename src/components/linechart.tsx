@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Line } from "@ant-design/plots";
+import { Box } from "@mui/material";
 
 const Graphic = () => {
   const [data, setData] = useState([]);
@@ -52,9 +53,21 @@ const Graphic = () => {
   };
 
   return (
-    <>
+    <Box
+      sx={{
+        marginTop: "1rem",
+        height: "86%",
+        padding: "0 0.7rem 0.5rem 0.7rem ",
+      }}
+    >
+      <Box
+        sx={{
+          height: "5rem",
+          backgroundColor: "black",
+        }}
+      ></Box>
       <Line {...config} height={1} />
-    </>
+    </Box>
   );
 };
 
