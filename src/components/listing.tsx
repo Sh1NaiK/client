@@ -77,7 +77,10 @@ const ListingTable = () => {
 
   const { Column } = Table;
 
-  const data: DataType[] = dbData;
+  const data: DataType[] = dbData.map((e: any, i) => {
+    e.id = i;
+    return e;
+  });
 
   return (
     <Box
@@ -87,7 +90,7 @@ const ListingTable = () => {
     >
       <Table
         dataSource={data}
-        rowKey="id_row"
+        rowKey="id"
         scroll={{ y: 460 }}
         pagination={false}
       >
