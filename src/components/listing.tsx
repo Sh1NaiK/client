@@ -87,9 +87,9 @@ const ListingTable = () => {
     >
       <Table
         dataSource={data}
+        rowKey="id_row"
         scroll={{ y: 460 }}
         pagination={false}
-        rowKey="id"
       >
         <Column title="ISO sell" dataIndex="sell_iso" key="sell_iso" />
         <Column title="Sell rate" dataIndex="sell_rate" key="sell_rate" />

@@ -35,7 +35,7 @@ const Transactions = () => {
         throw e;
       });
     });
-    setDbData(response.rows);
+    setDbData(response);
   };
 
   const [dbData, setDbData] = useState([]);

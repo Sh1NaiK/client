@@ -40,7 +40,6 @@ const SignUp = () => {
       username: nameValue,
       password: passwordValue,
     };
-    console.log(reqBody);
     const response = await fetch("/api/users/signup", {
       method: "POST",
       body: JSON.stringify(reqBody),

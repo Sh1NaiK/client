@@ -6,6 +6,7 @@ import {
   Input,
   InputAdornment,
   IconButton,
+  Typography,
 } from "@mui/material";
 import { useState, useEffect, useRef } from "react";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
@@ -203,7 +204,7 @@ const Dashboard = () => {
           className="formContainer"
           sx={{
             backgroundColor: "whitesmoke",
-            height: "60%",
+            height: "65%",
             width: "60%",
             margin: "0 auto",
             padding: "0.5rem 1rem 0 1rem",
@@ -221,7 +222,7 @@ const Dashboard = () => {
             <Box
               className="leftContainer"
               sx={{
-                width: "50%",
+                width: "49%",
                 height: "100%",
               }}
             >
@@ -341,10 +342,20 @@ const Dashboard = () => {
                   marginTop: "0.9rem",
                   marginRight: "2rem",
                   width: "100%",
-                  height: "70%",
+                  height: "72.8%",
                   backgroundColor: "white",
                 }}
               >
+                <Box
+                  className="allRatesWrapper"
+                  sx={{
+                    height: "auto",
+                    width: "100%",
+                    textAlign: "center",
+                  }}
+                >
+                  <Typography variant="h5">History</Typography>
+                </Box>
                 <Graphic />
               </Box>
             </Box>
@@ -354,10 +365,27 @@ const Dashboard = () => {
                 marginLeft: "0.5rem",
                 borderRadius: "0.5rem",
                 backgroundColor: "white ",
-                width: "50%",
+                width: "51%",
                 height: "100%",
               }}
             >
+              <Box
+                className="allRatesWrapper"
+                sx={{
+                  height: "auto",
+                  width: "100%",
+                  textAlign: "center",
+                }}
+              >
+                <Typography
+                  variant="h5"
+                  sx={{
+                    margin: "0.3rem auto",
+                  }}
+                >
+                  All rates
+                </Typography>
+              </Box>
               <ListingTable />
             </Box>
           </Box>

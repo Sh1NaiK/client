@@ -1,7 +1,6 @@
 import { Logout } from "@mui/icons-material";
 import {
   Avatar,
-  Divider,
   IconButton,
   ListItemIcon,
   Menu,
@@ -34,6 +33,7 @@ export default function AccountMenu() {
       console.log("Exception: " + e);
     }
   };
+
   const menuSymbol = localStorage.getItem("username");
 
   return (
@@ -89,10 +89,6 @@ export default function AccountMenu() {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem>
-          <Avatar /> My account
-        </MenuItem>
-        <Divider />
         <MenuItem onClick={handleLogOut}>
           <ListItemIcon>
             <Logout fontSize="small" />
