@@ -54,7 +54,7 @@ const SignUp = () => {
         throw e;
       });
     });
-    if (response !== "User already exists") {
+    if (response === "ok") {
       navigate("/signin");
     }
   };

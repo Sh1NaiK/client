@@ -19,7 +19,7 @@ const Transactions = () => {
   };
 
   const updateData = async () => {
-    const response = await fetch("/api/transactions/data", {
+    const response = await fetch("/api/transactions/all", {
       method: "POST",
       body: JSON.stringify({
         jwt: localStorage.getItem("auth-token"),

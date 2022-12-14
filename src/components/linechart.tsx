@@ -16,7 +16,6 @@ const Graphic = () => {
       body: JSON.stringify({
         jwt: localStorage.getItem("auth-token"),
         iso_sell: iso,
-        iso_buy: "BYN",
       }),
       headers: headers,
     }).then((response) => {
