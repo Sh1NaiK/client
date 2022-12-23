@@ -98,6 +98,10 @@ const Transactions = () => {
         throw e;
       });
     });
+    setIsoWant("");
+    setIsoSell("");
+    setAmount("");
+    setRate("");
     updateData();
   };
 

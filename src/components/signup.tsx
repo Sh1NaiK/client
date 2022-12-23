@@ -55,7 +55,7 @@ const SignUp = () => {
       });
     });
     if (response === "ok") {
-      navigate("/signin");
+      handleGoToSignIn();
     }
   };
 
